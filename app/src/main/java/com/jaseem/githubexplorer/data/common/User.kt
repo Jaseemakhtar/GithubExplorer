@@ -9,11 +9,11 @@ data class SearchUserResponse(
     val totalCount: Int,
     @SerialName("incomplete_results")
     val incompleteResults: Boolean,
-    val items: List<UserItem>
+    val items: List<UserSearchItemResponse>
 )
 
 @Serializable
-data class UserItem(
+data class UserSearchItemResponse(
     val login: String,
     val id: Int,
     @SerialName("avatar_url")

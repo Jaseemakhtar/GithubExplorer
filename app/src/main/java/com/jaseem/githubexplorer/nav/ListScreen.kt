@@ -6,12 +6,12 @@ import com.jaseem.githubexplorer.ui.listscreen.ListScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-object ListScreen
+object ListScreenRoute
 
 fun NavGraphBuilder.listScreen(
     onClickItem: () -> Unit
 ) {
-    composable<ListScreen> {
+    composable<ListScreenRoute> {
         ListScreen(
             onClickItem = onClickItem
         )
