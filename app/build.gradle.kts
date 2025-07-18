@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.kotlin.serialization)
     implementation(libs.retrofit)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

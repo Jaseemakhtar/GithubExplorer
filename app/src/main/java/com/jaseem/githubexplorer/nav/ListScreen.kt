@@ -12,6 +12,8 @@ fun NavGraphBuilder.listScreen(
     onClickItem: () -> Unit
 ) {
     composable<ListScreen> {
-        ListScreen()
+        ListScreen(
+            onClickItem = onClickItem
+        )
     }
 }

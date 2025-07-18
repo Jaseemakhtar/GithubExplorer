@@ -2,6 +2,8 @@ package com.jaseem.githubexplorer.nav
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.jaseem.githubexplorer.ui.repositoryScreen.RepositoryScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,5 +14,7 @@ fun NavController.navToRepositoryScreen(userId: String) {
 }
 
 fun NavGraphBuilder.repositoryScreen() {
-
+    composable<RepositoryScreen> {
+        RepositoryScreen()
+    }
 }

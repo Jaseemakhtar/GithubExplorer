@@ -20,3 +20,4 @@ data class UserItem(
     val avatarUrl: String,
     val url: String
 )
+
