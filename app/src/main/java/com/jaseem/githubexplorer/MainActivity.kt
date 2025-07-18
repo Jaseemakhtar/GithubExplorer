@@ -1,0 +1,39 @@
+package com.jaseem.githubexplorer
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.jaseem.githubexplorer.nav.ListScreen
+import com.jaseem.githubexplorer.nav.listScreen
+import com.jaseem.githubexplorer.nav.navToRepositoryScreen
+import com.jaseem.githubexplorer.nav.repositoryScreen
+import com.jaseem.githubexplorer.ui.theme.GithubExplorerTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            GithubExplorerTheme {
+                val navController = rememberNavController()
+
+                NavHost(navController, startDestination = ListScreen) {
+                    listScreen(
+                        onClickItem = {
+                            navController.navToRepositoryScreen("tempId")
+                        }
+                    )
+
+                    repositoryScreen()
+                }
+            }
+        }
+    }
+}
