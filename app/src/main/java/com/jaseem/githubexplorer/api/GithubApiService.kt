@@ -1,5 +1,7 @@
 package com.jaseem.githubexplorer.api
 
+import com.jaseem.githubexplorer.data.common.SearchUserResponse
+import com.jaseem.githubexplorer.data.common.UserDetailResponse
 import com.jaseem.githubexplorer.data.common.UserSearchItemResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -20,15 +22,13 @@ interface GitHubApiService {
 
     @GET("search/users")
     suspend fun searchUsers(
-        @Query("q") query: String,
-        @Header("Authorization") token: String? = null
-    )
+        @Query("q") query: String
+    ): Response<SearchUserResponse>
 
-    @GET("users/{username}")
+    @GET("user/{accountId}")
     suspend fun getUserDetails(
-        @Path("username") username: String,
-        @Header("Authorization") token: String? = null
-    )
+        @Path("accountId") accountId: Int
+    ): Response<UserDetailResponse>
 
     @GET("users/{username}/repos")
     suspend fun getUserRepositories(
