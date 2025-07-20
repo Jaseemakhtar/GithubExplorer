@@ -2,10 +2,10 @@ package com.jaseem.githubexplorer.api
 
 import retrofit2.Response
 
-sealed class Resource<T> {
-    data class Success<T>(val data: T) : Resource<T>()
-    data class Error<T>(val throwable: Throwable) : Resource<T>()
-    data class Failure<T>(val throwable: Throwable) : Resource<T>()
+sealed interface Resource<T> {
+    data class Success<T>(val data: T) : Resource<T>
+    data class Error<T>(val throwable: Throwable) : Resource<T>
+    data class Failure<T>(val throwable: Throwable) : Resource<T>
 }
 
 internal suspend inline fun <reified T> resourceWrapper(
