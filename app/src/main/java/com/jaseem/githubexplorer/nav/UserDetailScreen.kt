@@ -7,10 +7,13 @@ import com.jaseem.githubexplorer.ui.userDetailScreen.UserDetailScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserDetailRoute (val userId: String)
+data class UserDetailRoute (
+    val userId: Int,
+    val userName: String
+)
 
-fun NavController.navToUserDetailScreen(userId: String) {
-    navigate(UserDetailRoute(userId))
+fun NavController.navToUserDetailScreen(userId: Int, username: String) {
+    navigate(UserDetailRoute(userId, username))
 }
 
 fun NavGraphBuilder.repositoryScreen() {

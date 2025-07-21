@@ -3,6 +3,7 @@ package com.jaseem.githubexplorer.api
 import com.jaseem.githubexplorer.data.common.SearchUserResponse
 import com.jaseem.githubexplorer.data.common.UserDetailResponse
 import com.jaseem.githubexplorer.data.common.UserSearchItemResponse
+import com.jaseem.githubexplorer.data.detailscreen.model.RepositoryDetail
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -33,7 +34,6 @@ interface GitHubApiService {
     @GET("users/{username}/repos")
     suspend fun getUserRepositories(
         @Path("username") username: String,
-        @Query("per_page") perPage: Int = 100,
-        @Header("Authorization") token: String? = null
-    )
+//        @Query("per_page") perPage: Int = 100
+    ): Response<List<RepositoryDetail>>
 }

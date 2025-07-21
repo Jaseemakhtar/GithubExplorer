@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 object ListScreenRoute
 
 fun NavGraphBuilder.listScreen(
-    onClickItem: () -> Unit
+    onClickItem: (userId: Int, username: String) -> Unit
 ) {
     composable<ListScreenRoute> {
         ListScreen(
