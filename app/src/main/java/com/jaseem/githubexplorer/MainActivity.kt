@@ -39,6 +39,7 @@ import com.jaseem.githubexplorer.ui.theme.SIZE_32
 import com.jaseem.githubexplorer.ui.theme.SPACE_12
 import com.jaseem.githubexplorer.ui.theme.SPACE_16
 import com.jaseem.githubexplorer.ui.theme.SPACE_4
+import com.jaseem.githubexplorer.ui.theme.SPACE_8
 import com.jaseem.githubexplorer.ui.theme.SecondaryBg
 import com.jaseem.githubexplorer.ui.theme.TextPrimary
 
@@ -62,13 +63,13 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .background(color = DarkSurface)
-                                .padding(vertical = SPACE_4)
+                                .padding(vertical = SPACE_8)
                         )
 
                         NavHost(navController, startDestination = ListScreenRoute) {
                             listScreen(
-                                onClickItem = {
-                                    navController.navToUserDetailScreen("tempId")
+                                onClickItem = { userId, username ->
+                                    navController.navToUserDetailScreen(userId, username)
                                 }
                             )
 

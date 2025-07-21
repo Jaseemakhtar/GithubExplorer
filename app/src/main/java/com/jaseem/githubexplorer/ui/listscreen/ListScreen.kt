@@ -42,6 +42,7 @@ import com.jaseem.githubexplorer.ui.state.UiState
 import com.jaseem.githubexplorer.ui.theme.AccentGithubGreen
 import com.jaseem.githubexplorer.ui.theme.ColumnSpacer
 import com.jaseem.githubexplorer.ui.theme.DarkOnSurface
+import com.jaseem.githubexplorer.ui.theme.DarkOutline
 import com.jaseem.githubexplorer.ui.theme.DarkSurface
 import com.jaseem.githubexplorer.ui.theme.FiraCodeFontFamily
 import com.jaseem.githubexplorer.ui.theme.RowSpacer
@@ -52,10 +53,10 @@ import com.jaseem.githubexplorer.ui.theme.TextPrimary
 
 @Composable
 fun ListScreen(
-    onClickItem: () -> Unit,
+    onClickItem: (userId: Int, username: String) -> Unit,
     viewModel: ListScreenViewModel = viewModel(factory = ListScreenViewModelFactory())
 ) {
-    val uiState  by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     when (uiState) {
         UiState.Loading, is UiState.DirtyLoading -> {
@@ -70,15 +71,17 @@ fun ListScreen(
             val data = (uiState as UiState.Success<List<UserSearchItemResponse>>).data
             val searchQuery by viewModel.searchQuery.collectAsState()
 
-            Column (modifier = Modifier.fillMaxSize()) {
-                Column (modifier = Modifier.fillMaxWidth().background(color = DarkSurface)) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = DarkSurface)) {
                     ColumnSpacer(SPACE_16)
 
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = viewModel::onSearchQueryChange,
                         placeholder = {
-                            Row (verticalAlignment = Alignment.CenterVertically){
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     imageVector = Icons.Rounded.Search,
                                     contentDescription = null
@@ -88,12 +91,13 @@ fun ListScreen(
 
                                 Text(
                                     text = "Search users",
-                                    fontFamily = FiraCodeFontFamily,
-//                                    color = TextSecondary
+                                    fontFamily = FiraCodeFontFamily
                                 )
                             }
                         },
-                        modifier = Modifier.padding(horizontal = SPACE_16).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(horizontal = SPACE_16)
+                            .fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedBorderColor = DarkOnSurface,
                             unfocusedTextColor = DarkOnSurface,
@@ -105,13 +109,14 @@ fun ListScreen(
                             fontFamily = FiraCodeFontFamily,
                             color = TextPrimary,
                             fontWeight = FontWeight.Normal
-                        )
+                        ),
+                        maxLines = 1
                     )
 
                     ColumnSpacer(SPACE_16)
                 }
 
-                LazyColumn (
+                LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(items = data) {
@@ -121,7 +126,11 @@ fun ListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
-                                .clickable(onClick = onClickItem)
+                                .clickable(
+                                    onClick = {
+                                        onClickItem(it.id, it.login)
+                                    }
+                                )
                                 .padding(vertical = SPACE_8, horizontal = SPACE_16)
 
                         )
@@ -151,7 +160,7 @@ fun ListItem(
             modifier = Modifier
                 .size(SIZE_48)
                 .clip(CircleShape)
-                .border(width = 0.4.dp, color = TextPrimary, shape = CircleShape)
+                .border(width = 0.4.dp, color = DarkOutline, shape = CircleShape)
         )
 
         RowSpacer(SPACE_16)

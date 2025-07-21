@@ -44,3 +44,20 @@ val DarkOnBackground = Color(0xFFC9D1D9)
 val DarkOnSurface = Color(0xFF8B949E)
 val DarkOutline = Color(0xFF30363D)
 val DarkChipBackground = Color(0xFF1C2B41)
+
+
+val languageColorMap = mapOf(
+    "Kotlin" to Color(0xFFA97BFF),
+    "Java" to Color(0xFFB07219),
+    "Python" to Color(0xFF3572A5),
+    "JavaScript" to Color(0xFFF1E05A),
+    "C++" to Color(0xFFF34B7D),
+    "C" to Color(0xFF555555),
+    "TypeScript" to Color(0xFF2B7489),
+    "Go" to Color(0xFF00ADD8),
+    "Swift" to Color(0xFFFFAC45),
+    "HTML" to Color(0xFFE34C26),
+    "CSS" to Color(0xFF563D7C),
+    "Shell" to Color(0xFF89E051),
+    "Ruby" to Color(0xFF701516)
+)
