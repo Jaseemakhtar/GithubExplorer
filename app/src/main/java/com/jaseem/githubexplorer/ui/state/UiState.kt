@@ -4,7 +4,6 @@ import com.jaseem.githubexplorer.api.Resource
 
 sealed interface UiState<out T> {
     data object Loading : UiState<Nothing>
-    data class DirtyLoading<T>(val data: T) : UiState<T>
     data class Success<T>(val data: T) : UiState<T>
     data class Error<T>(val throwable: Throwable) : UiState<T>
 }
