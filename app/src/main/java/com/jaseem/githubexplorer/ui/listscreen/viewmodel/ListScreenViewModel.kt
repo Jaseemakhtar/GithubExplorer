@@ -1,78 +1,43 @@
 package com.jaseem.githubexplorer.ui.listscreen.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jaseem.githubexplorer.data.common.UserSearchItemResponse
+import androidx.paging.cachedIn
 import com.jaseem.githubexplorer.data.listscreen.ListScreenRepository
 import com.jaseem.githubexplorer.domain.usecase.SearchQuerySanitizerUseCase
-import com.jaseem.githubexplorer.ui.state.UiState
-import com.jaseem.githubexplorer.ui.state.uiStateWrapper
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 
 class ListScreenViewModel(
     private val listScreenRepository: ListScreenRepository,
     private val searchQuerySanitizer: SearchQuerySanitizerUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState<List<UserSearchItemResponse>>>(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    private var searchQueryDebounceJob: Job? = null
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val pagedUsers = searchQuery
+        .debounce(700)
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            val trimmedQuery = query.trim()
 
-    init {
-        viewModelScope.launch {
-            _uiState.value = UiState.Loading
-
-            _uiState.value = uiStateWrapper {
-                listScreenRepository.getAllUsers()
+            if (trimmedQuery.isEmpty()) {
+                listScreenRepository.getAllUsers().flow
+            } else {
+                listScreenRepository.searchUsers(query).flow
             }
-
-            Log.d("DebooogRESP", "${uiState.value} ")
         }
-    }
-
-    private fun searchUsers(sanitizedQuery: String) {
-        searchQueryDebounceJob?.cancel()
-        searchQueryDebounceJob = viewModelScope.launch {
-            delay(700)
-            val trimmedText = sanitizedQuery.trim()
-
-            val oldData = (uiState.value as? UiState.Success)?.data
-
-            _uiState.value = UiState.DirtyLoading(oldData ?: emptyList())
-
-            val res =  uiStateWrapper { listScreenRepository.searchUsers(trimmedText) }
-
-            when (res) {
-                is UiState.Error -> {
-                    _uiState.value = UiState.Error(res.throwable)
-                }
-
-
-                is UiState.Success -> {
-                    _uiState.value = UiState.Success(res.data.items)
-                }
-
-                else -> {
-                    /* no-op */
-                }
-            }
-
-            Log.d("DebooogRESP", "$res ")
-        }
-    }
+        .cachedIn(viewModelScope)
 
     fun onSearchQueryChange(query: String) {
         val sanitizedQuery = searchQuerySanitizer.invoke(query)
         _searchQuery.value = sanitizedQuery
-
-        searchUsers(sanitizedQuery)
     }
 }

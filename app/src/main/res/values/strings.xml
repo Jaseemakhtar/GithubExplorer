@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">GithubExplorer</string>
+    <string name="label_github">Github</string>
+    <string name="label_explorer">Explorer</string>
+    <string name="label_repos">Repos</string>
+    <string name="label_followers">Followers</string>
+    <string name="label_following">Following</string>
+    <string name="placeholder_search_users">Search Users</string>
+    <string name="error_generic">Something went wrong!</string>
+    <string name="text_no_results_generic">No results found!</string>
+    <string name="text_repos_error">Something went wrong loading repos!</string>
+    <string name="text_no_repos">User doesn\'t have any repos!</string>
 </resources>

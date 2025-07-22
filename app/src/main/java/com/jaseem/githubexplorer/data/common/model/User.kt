@@ -1,4 +1,4 @@
-package com.jaseem.githubexplorer.data.common
+package com.jaseem.githubexplorer.data.common.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,10 +1,13 @@
 package com.jaseem.githubexplorer.data.detailscreen
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.jaseem.githubexplorer.api.GitHubApiService
 import com.jaseem.githubexplorer.api.Resource
 import com.jaseem.githubexplorer.api.resourceWrapper
-import com.jaseem.githubexplorer.data.common.UserDetailResponse
+import com.jaseem.githubexplorer.data.common.model.UserDetailResponse
 import com.jaseem.githubexplorer.data.detailscreen.model.RepositoryDetail
+import com.jaseem.githubexplorer.data.detailscreen.pagingsource.UnforkedRepositoryPagingSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +15,7 @@ import kotlinx.coroutines.withContext
 interface UserDetailRepository {
     suspend fun getUserDetails(userId: Int): Resource<UserDetailResponse>
 
-    suspend fun getUserRepositories(username: String): Resource<List<RepositoryDetail>>
+    fun getUnforkedRepositories(username: String): Pager<Int, RepositoryDetail>
 }
 
 class UserDetailRepositoryImp(
@@ -28,10 +31,9 @@ class UserDetailRepositoryImp(
         }
     }
 
-    override suspend fun getUserRepositories(username: String): Resource<List<RepositoryDetail>> =
-        withContext(dispatcher) {
-            resourceWrapper {
-                api.getUserRepositories(username)
-            }
-        }
+    override fun getUnforkedRepositories(username: String): Pager<Int, RepositoryDetail> =
+        Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { UnforkedRepositoryPagingSource(api =api, userName = username) }
+        )
 }
