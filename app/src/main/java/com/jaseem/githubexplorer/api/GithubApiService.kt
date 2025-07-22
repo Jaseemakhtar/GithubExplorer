@@ -37,6 +37,9 @@ interface GitHubApiService {
     @GET("users/{username}/repos")
     suspend fun getUserRepositories(
         @Path("username") username: String,
-//        @Query("per_page") perPage: Int = 100
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int = 20,
+        @Query("sort") sort: String = "stars",
+        @Query("order") order: String = "desc"
     ): Response<List<RepositoryDetail>>
 }

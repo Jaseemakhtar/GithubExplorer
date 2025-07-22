@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.jaseem.githubexplorer.R
 import com.jaseem.githubexplorer.ui.theme.DarkOnBackground
@@ -24,7 +25,11 @@ import com.jaseem.githubexplorer.ui.theme.SPACE_16
 import com.jaseem.githubexplorer.ui.theme.TextPrimary
 
 @Composable
-fun ErrorStateUi(modifier: Modifier = Modifier) {
+fun ErrorStateUi(
+    modifier: Modifier = Modifier,
+    errorText: String = stringResource(R.string.error_generic),
+    fontSize: TextUnit = 16.sp
+) {
     Column(
         modifier,
         verticalArrangement = Arrangement.Center,
@@ -40,11 +45,11 @@ fun ErrorStateUi(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = stringResource(R.string.error_generic),
+            text = errorText,
             color = TextPrimary,
             fontFamily = FiraCodeFontFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
+            fontSize = fontSize,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(horizontal = SPACE_16)
         )

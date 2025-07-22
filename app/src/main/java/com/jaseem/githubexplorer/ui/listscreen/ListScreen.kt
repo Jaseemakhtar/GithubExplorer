@@ -125,11 +125,15 @@ fun ListScreen(
 
         when (userList.loadState.refresh) {
             is LoadState.Error -> {
-                ErrorStateUi(modifier = Modifier.fillMaxWidth().weight(1f))
+                ErrorStateUi(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f))
             }
 
             LoadState.Loading -> {
-                LoadingPage(modifier = Modifier.fillMaxWidth().weight(1f))
+                LoadingPage(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f))
             }
 
             is LoadState.NotLoading -> {
@@ -180,11 +184,7 @@ fun ListScreen(
                                 }
                             }
 
-                            is LoadState.Error -> {
-
-                            }
-
-                            is LoadState.NotLoading -> {
+                            else -> {
                                 /* no-op */
                             }
                         }
@@ -196,7 +196,7 @@ fun ListScreen(
 }
 
 @Composable
-fun LoadingPage(modifier: Modifier = Modifier) {
+private fun LoadingPage(modifier: Modifier = Modifier) {
     LazyColumn (modifier) {
         items(20) {
             ListItemLoading(
