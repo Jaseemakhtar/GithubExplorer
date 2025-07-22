@@ -29,7 +29,7 @@ class ListScreenRepositoryImp(
 
     override suspend fun searchUsers(query: String): Pager<Int, UserSearchItemResponse> {
         return Pager(
-            config = PagingConfig(pageSize = 10, prefetchDistance = 1), // Todo: Update after recording
+            config = PagingConfig(pageSize = 10),
             pagingSourceFactory = { SearchUserPagingSource(api, query) }
         )
     }

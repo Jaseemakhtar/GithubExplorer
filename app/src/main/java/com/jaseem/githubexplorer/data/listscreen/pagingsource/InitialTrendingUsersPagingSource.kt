@@ -6,7 +6,6 @@ import com.jaseem.githubexplorer.api.GitHubApiService
 import com.jaseem.githubexplorer.api.Resource
 import com.jaseem.githubexplorer.api.resourceWrapper
 import com.jaseem.githubexplorer.data.common.model.UserSearchItemResponse
-import kotlinx.coroutines.delay
 
 class InitialTrendingUsersPagingSource(
     private val api: GitHubApiService
@@ -23,7 +22,6 @@ class InitialTrendingUsersPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UserSearchItemResponse> {
         return try {
-            delay(3000)
             val page = params.key ?: 1
 
             val response = resourceWrapper {

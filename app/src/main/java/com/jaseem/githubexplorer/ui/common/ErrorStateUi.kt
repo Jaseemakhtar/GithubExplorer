@@ -2,10 +2,9 @@ package com.jaseem.githubexplorer.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.jaseem.githubexplorer.R
 import com.jaseem.githubexplorer.ui.theme.DarkOnBackground
 import com.jaseem.githubexplorer.ui.theme.FiraCodeFontFamily
+import com.jaseem.githubexplorer.ui.theme.SIZE_64
 import com.jaseem.githubexplorer.ui.theme.SPACE_16
 import com.jaseem.githubexplorer.ui.theme.TextPrimary
 
@@ -39,9 +39,7 @@ fun ErrorStateUi(
             imageVector = Icons.Outlined.Warning,
             contentDescription = null,
             tint = DarkOnBackground,
-            modifier = Modifier
-                .fillMaxSize(0.2f)
-                .aspectRatio(1f)
+            modifier = Modifier.size(SIZE_64)
         )
 
         Text(

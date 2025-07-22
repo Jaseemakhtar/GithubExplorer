@@ -47,6 +47,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.jaseem.githubexplorer.R
+import com.jaseem.githubexplorer.ui.common.EmptyState
 import com.jaseem.githubexplorer.ui.common.ErrorStateUi
 import com.jaseem.githubexplorer.ui.listscreen.viewmodel.ListScreenViewModel
 import com.jaseem.githubexplorer.ui.listscreen.viewmodel.ListScreenViewModelFactory
@@ -137,55 +138,63 @@ fun ListScreen(
             }
 
             is LoadState.NotLoading -> {
+                if (userList.itemCount == 0) {
+                    EmptyState(
+                        text = stringResource(R.string.text_no_results_generic),
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(bottom = SPACE_144)
+                    ) {
+                        items(
+                            userList.itemCount,
+                            key = { index -> userList[index]?.id!! }
+                        ) { index ->
+                            val item = userList[index] ?: return@items
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(bottom = SPACE_144)
-                ) {
-                    items(
-                        userList.itemCount,
-                        key = { index -> userList[index]?.id!! }
-                    ) { index ->
-                        val item = userList[index] ?: return@items
+                            Column {
+                                ListItem(
+                                    name = item.login,
+                                    avatarUrl = item.avatarUrl,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentHeight()
+                                        .clickable(
+                                            onClick = {
+                                                onClickItem(item.id, item.login)
+                                            }
+                                        )
+                                        .padding(vertical = SPACE_8, horizontal = SPACE_16)
+                                )
 
-                        Column {
-                            ListItem(
-                                name = item.login,
-                                avatarUrl = item.avatarUrl,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .clickable(
-                                        onClick = {
-                                            onClickItem(item.id, item.login)
-                                        }
-                                    )
-                                    .padding(vertical = SPACE_8, horizontal = SPACE_16)
-                            )
-
-                            if (index != userList.itemCount - 1) {
-                                ListDivider()
-                            }
-                        }
-
-                    }
-
-                    item {
-                        when (userList.loadState.append) {
-                            LoadState.Loading -> {
-
-                                Column(modifier = Modifier.fillMaxWidth()) {
+                                if (index != userList.itemCount - 1) {
                                     ListDivider()
-                                    ListItemLoading(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(SIZE_64)
-                                    )
                                 }
                             }
 
-                            else -> {
-                                /* no-op */
+                        }
+
+                        item {
+                            when (userList.loadState.append) {
+                                LoadState.Loading -> {
+
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        ListDivider()
+                                        ListItemLoading(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(SIZE_64)
+                                        )
+                                    }
+                                }
+
+                                else -> {
+                                    /* no-op */
+                                }
                             }
                         }
                     }

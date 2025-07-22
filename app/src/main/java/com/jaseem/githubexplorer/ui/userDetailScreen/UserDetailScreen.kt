@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,6 +56,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.jaseem.githubexplorer.R
 import com.jaseem.githubexplorer.data.common.model.UserDetailResponse
+import com.jaseem.githubexplorer.ui.common.EmptyState
 import com.jaseem.githubexplorer.ui.common.ErrorStateUi
 import com.jaseem.githubexplorer.ui.state.UiState
 import com.jaseem.githubexplorer.ui.theme.ColumnSpacer
@@ -64,6 +66,7 @@ import com.jaseem.githubexplorer.ui.theme.DarkPrimary
 import com.jaseem.githubexplorer.ui.theme.DarkSurface
 import com.jaseem.githubexplorer.ui.theme.FiraCodeFontFamily
 import com.jaseem.githubexplorer.ui.theme.RowSpacer
+import com.jaseem.githubexplorer.ui.theme.SIZE_100
 import com.jaseem.githubexplorer.ui.theme.SIZE_12
 import com.jaseem.githubexplorer.ui.theme.SIZE_16
 import com.jaseem.githubexplorer.ui.theme.SIZE_24
@@ -99,7 +102,7 @@ fun UserDetailScreen(
                 }
 
                 is UiState.Error -> {
-                    ErrorStateUi()
+                    ErrorStateUi(modifier = Modifier.fillMaxSize())
                 }
 
                 is UiState.Success -> {
@@ -120,7 +123,11 @@ fun UserDetailScreen(
         ) {
             when (repositories.loadState.refresh) {
                 is LoadState.Error -> {
-
+                    ErrorStateUi(
+                        errorText = stringResource(R.string.text_repos_error),
+                        fontSize = 14.sp,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
 
                 LoadState.Loading -> {
@@ -128,59 +135,66 @@ fun UserDetailScreen(
                 }
 
                 is LoadState.NotLoading -> {
+                    if (repositories.itemCount == 0) {
+                        EmptyState(
+                            text = stringResource(R.string.text_no_repos),
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(1f)
+                        ) {
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(1f)
-                    ) {
+                            items(repositories.itemCount) {
+                                val item = repositories[it] ?: return@items
 
-                        items(repositories.itemCount) {
-                            val item = repositories[it] ?: return@items
+                                Column {
 
-                            Column {
-
-                                RepositoryListItem(
-                                    name = item.name,
-                                    desc = item.description,
-                                    language = item.language,
-                                    stars = item.stargazersCount,
-                                    forks = item.forks,
-                                    modifier = Modifier.clickable {
+                                    RepositoryListItem(
+                                        name = item.name,
+                                        desc = item.description,
+                                        language = item.language,
+                                        stars = item.stargazersCount,
+                                        forks = item.forks,
+                                        modifier = Modifier.clickable {
 
                                             val intent = Intent(Intent.ACTION_VIEW)
                                             intent.data = item.htmlUrl.toUri()
                                             context.startActivity(intent)
 
-                                    }
-                                )
+                                        }
+                                    )
 
-                                if (it != repositories.itemCount - 1) {
-                                    ListItemDivider()
-                                }
-                            }
-                        }
-
-
-                        when (repositories.loadState.append) {
-                            LoadState.Loading -> {
-                                item {
-                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                    if (it != repositories.itemCount - 1) {
                                         ListItemDivider()
-                                        LoadingListItem(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = SPACE_16)
-                                        )
                                     }
                                 }
                             }
 
-                            else -> {
-                                /* no-op */
-                            }
-                        }
 
+                            when (repositories.loadState.append) {
+                                LoadState.Loading -> {
+                                    item {
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            ListItemDivider()
+                                            LoadingListItem(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = SPACE_16)
+                                            )
+                                        }
+                                    }
+                                }
+
+                                else -> {
+                                    /* no-op */
+                                }
+                            }
+
+                        }
                     }
 
                 }
@@ -208,7 +222,7 @@ private fun ProfileSection(
                     .build(),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(SIZE_100)
                     .clip(CircleShape)
                     .border(
                         width = 0.4.dp,
@@ -530,7 +544,7 @@ private fun ProfileSectionLoadingShimmer(modifier: Modifier = Modifier) {
 
             Box(
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(SIZE_100)
                     .background(color, CircleShape)
             )
 

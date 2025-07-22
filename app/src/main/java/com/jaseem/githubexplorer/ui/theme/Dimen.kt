@@ -28,6 +28,7 @@ val SIZE_32 = 32.dp
 val SIZE_48 = 48.dp
 val SIZE_56 = 56.dp
 val SIZE_64 = 64.dp
+val SIZE_100 = 100.dp
 val SIZE_156 = 156.dp
 val SIZE_164 = 164.dp
 val SIZE_184 = 184.dp
