@@ -10,9 +10,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GitHubApiService {
-    //
-    // https://api.github.com/users
-    // https://api.github.com/orgs/moneyforward/members
 
     @GET("users")
     suspend fun getAllUsers(
