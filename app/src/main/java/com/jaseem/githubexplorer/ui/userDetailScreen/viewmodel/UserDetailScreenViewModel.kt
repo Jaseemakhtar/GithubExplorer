@@ -6,13 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.jaseem.githubexplorer.api.Resource
-import com.jaseem.githubexplorer.data.common.UserDetailResponse
-import com.jaseem.githubexplorer.data.common.UserSearchItemResponse
+import com.jaseem.githubexplorer.data.common.model.UserDetailResponse
 import com.jaseem.githubexplorer.data.detailscreen.UserDetailRepository
 import com.jaseem.githubexplorer.data.detailscreen.model.RepositoryDetail
 import com.jaseem.githubexplorer.nav.UserDetailRoute
 import com.jaseem.githubexplorer.ui.state.UiState
-import com.jaseem.githubexplorer.ui.state.uiStateWrapper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

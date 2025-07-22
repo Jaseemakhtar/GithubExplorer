@@ -1,18 +1,19 @@
 package com.jaseem.githubexplorer.data.listscreen
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.jaseem.githubexplorer.api.GitHubApiService
-import com.jaseem.githubexplorer.api.Resource
-import com.jaseem.githubexplorer.api.resourceWrapper
-import com.jaseem.githubexplorer.data.common.SearchUserResponse
-import com.jaseem.githubexplorer.data.common.UserSearchItemResponse
+import com.jaseem.githubexplorer.data.common.model.UserSearchItemResponse
+import com.jaseem.githubexplorer.data.listscreen.pagingsource.InitialTrendingUsersPagingSource
+import com.jaseem.githubexplorer.data.listscreen.pagingsource.SearchUserPagingSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 interface ListScreenRepository {
-    suspend fun getAllUsers(): Resource<List<UserSearchItemResponse>>
+    suspend fun getAllUsers(): Pager<Int, UserSearchItemResponse>
 
-    suspend fun searchUsers(query: String): Resource<SearchUserResponse>
+    suspend fun searchUsers(query: String): Pager<Int, UserSearchItemResponse>
 }
 
 class ListScreenRepositoryImp(
@@ -20,20 +21,18 @@ class ListScreenRepositoryImp(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ListScreenRepository {
 
-    override suspend fun getAllUsers(): Resource<List<UserSearchItemResponse>> =
-        withContext(dispatcher) {
-            resourceWrapper {
-                api.getAllUsers()
-            }
-        }
+    override suspend fun getAllUsers(): Pager<Int, UserSearchItemResponse> =
+        Pager(
+            config = PagingConfig(pageSize = 40),
+            pagingSourceFactory = { InitialTrendingUsersPagingSource(api) }
+        )
 
-    override suspend fun searchUsers(query: String): Resource<SearchUserResponse> =
-        withContext(dispatcher) {
-            resourceWrapper {
-                val userQuery = query.plus(" type:user")
-                api.searchUsers(userQuery)
-            }
-        }
+    override suspend fun searchUsers(query: String): Pager<Int, UserSearchItemResponse> {
+        return Pager(
+            config = PagingConfig(pageSize = 10, prefetchDistance = 1), // Todo: Update after recording
+            pagingSourceFactory = { SearchUserPagingSource(api, query) }
+        )
+    }
 
     suspend fun getOrgMembers(org: String) = withContext(dispatcher) {
 

@@ -1,12 +1,11 @@
 package com.jaseem.githubexplorer.api
 
-import com.jaseem.githubexplorer.data.common.SearchUserResponse
-import com.jaseem.githubexplorer.data.common.UserDetailResponse
-import com.jaseem.githubexplorer.data.common.UserSearchItemResponse
+import com.jaseem.githubexplorer.data.common.model.SearchUserResponse
+import com.jaseem.githubexplorer.data.common.model.UserDetailResponse
+import com.jaseem.githubexplorer.data.common.model.UserSearchItemResponse
 import com.jaseem.githubexplorer.data.detailscreen.model.RepositoryDetail
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -16,14 +15,18 @@ interface GitHubApiService {
     // https://api.github.com/orgs/moneyforward/members
 
     @GET("users")
-    suspend fun getAllUsers(): Response<List<UserSearchItemResponse>>
+    suspend fun getAllUsers(
+        @Query("per_page") perPage: Int = 20
+    ): Response<List<UserSearchItemResponse>>
 
     @GET("orgs/{org}/members")
     suspend fun getOrgMembers(@Path("org") org: String)
 
     @GET("search/users")
     suspend fun searchUsers(
-        @Query("q") query: String
+        @Query("q") query: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int = 20
     ): Response<SearchUserResponse>
 
     @GET("user/{accountId}")

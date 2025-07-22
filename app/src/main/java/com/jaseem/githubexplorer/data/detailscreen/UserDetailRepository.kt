@@ -3,7 +3,7 @@ package com.jaseem.githubexplorer.data.detailscreen
 import com.jaseem.githubexplorer.api.GitHubApiService
 import com.jaseem.githubexplorer.api.Resource
 import com.jaseem.githubexplorer.api.resourceWrapper
-import com.jaseem.githubexplorer.data.common.UserDetailResponse
+import com.jaseem.githubexplorer.data.common.model.UserDetailResponse
 import com.jaseem.githubexplorer.data.detailscreen.model.RepositoryDetail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
