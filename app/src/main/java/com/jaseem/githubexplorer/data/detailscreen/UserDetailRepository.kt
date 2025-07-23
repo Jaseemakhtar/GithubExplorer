@@ -33,7 +33,7 @@ class UserDetailRepositoryImp(
 
     override fun getUnforkedRepositories(username: String): Pager<Int, RepositoryDetail> =
         Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            config = PagingConfig(pageSize = 30, enablePlaceholders = false),
             pagingSourceFactory = { UnforkedRepositoryPagingSource(api =api, userName = username) }
         )
 }

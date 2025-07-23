@@ -102,7 +102,12 @@ fun UserDetailScreen(
                 }
 
                 is UiState.Error -> {
-                    ErrorStateUi(modifier = Modifier.fillMaxSize())
+                    val error = (uiState as UiState.Error<UserDetailResponse>).throwable
+
+                    ErrorStateUi(
+                        errorText = error.message ?: stringResource(R.string.error_generic),
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
 
                 is UiState.Success -> {
@@ -121,10 +126,12 @@ fun UserDetailScreen(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            when (repositories.loadState.refresh) {
+            when (val state = repositories.loadState.refresh) {
                 is LoadState.Error -> {
+                    val error = state.error
+
                     ErrorStateUi(
-                        errorText = stringResource(R.string.text_repos_error),
+                        errorText = error.message ?: stringResource(R.string.text_repos_error),
                         fontSize = 14.sp,
                         modifier = Modifier.fillMaxSize()
                     )

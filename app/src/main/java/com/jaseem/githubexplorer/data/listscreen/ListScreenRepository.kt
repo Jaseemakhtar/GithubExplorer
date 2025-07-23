@@ -6,6 +6,7 @@ import com.jaseem.githubexplorer.api.GitHubApiService
 import com.jaseem.githubexplorer.data.common.model.UserSearchItemResponse
 import com.jaseem.githubexplorer.data.listscreen.pagingsource.InitialTrendingUsersPagingSource
 import com.jaseem.githubexplorer.data.listscreen.pagingsource.SearchUserPagingSource
+import com.jaseem.githubexplorer.ui.listscreen.viewmodel.Location
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,7 +14,7 @@ import kotlinx.coroutines.withContext
 interface ListScreenRepository {
     suspend fun getAllUsers(): Pager<Int, UserSearchItemResponse>
 
-    suspend fun searchUsers(query: String): Pager<Int, UserSearchItemResponse>
+    suspend fun searchUsers(query: String, location: Location): Pager<Int, UserSearchItemResponse>
 }
 
 class ListScreenRepositoryImp(
@@ -23,14 +24,25 @@ class ListScreenRepositoryImp(
 
     override suspend fun getAllUsers(): Pager<Int, UserSearchItemResponse> =
         Pager(
-            config = PagingConfig(pageSize = 40),
+            config = PagingConfig(pageSize = 30, enablePlaceholders = false),
             pagingSourceFactory = { InitialTrendingUsersPagingSource(api) }
         )
 
-    override suspend fun searchUsers(query: String): Pager<Int, UserSearchItemResponse> {
+    override suspend fun searchUsers(
+        query: String,
+        location: Location
+    ): Pager<Int, UserSearchItemResponse> {
+        val locationFilter = if (location == Location.None) "" else "location:${location.countryName}"
+
+        val separator = if (query.isNotEmpty() && location != Location.None) {
+            "+"
+        } else {
+            ""
+        }
+
         return Pager(
-            config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { SearchUserPagingSource(api, query) }
+            config = PagingConfig(pageSize = 30, enablePlaceholders = false),
+            pagingSourceFactory = { SearchUserPagingSource(api, "$query$separator$locationFilter") }
         )
     }
 
