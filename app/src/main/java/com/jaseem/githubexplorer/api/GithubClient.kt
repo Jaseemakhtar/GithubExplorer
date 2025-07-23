@@ -1,9 +1,11 @@
 package com.jaseem.githubexplorer.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.jaseem.githubexplorer.BuildConfig
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object GitHubClient {
@@ -14,14 +16,25 @@ object GitHubClient {
         ignoreUnknownKeys = true
     }
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor { chain ->
-            val request = chain.request().newBuilder()
-                .addHeader("Authorization", "token $PERSONAL_ACCESS_TOKEN")
-                .build()
-            chain.proceed(request)
+    private val okHttpClient by lazy {
+       val builder = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", "token $PERSONAL_ACCESS_TOKEN")
+                    .addHeader("Accept", "application/vnd.github+json")
+                    .build()
+                chain.proceed(request)
+            }
+
+        if (BuildConfig.enableHttpLogs) {
+            val loggingInterceptor = HttpLoggingInterceptor()
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+            builder.addInterceptor(loggingInterceptor)
         }
-        .build()
+
+        builder.build()
+    }
 
     private val retrofit by lazy {
         Retrofit.Builder()

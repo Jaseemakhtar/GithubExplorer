@@ -20,7 +20,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("Boolean", "enableHttpLogs", "true")
+        }
         release {
+            buildConfigField("Boolean", "enableHttpLogs", "false")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -58,6 +63,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.logging.interceptor)
 
 
     testImplementation(libs.junit)
