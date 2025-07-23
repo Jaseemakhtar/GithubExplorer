@@ -6,10 +6,8 @@ A modern Android app built with Jetpack Compose to explore GitHub users and thei
 
 ## 📱 App Demo
 
-<img src="media/github_explorer_home_screen.gif" alt="App Demo" width="360"/>
-<img src="media/github_explorer_location_filter.gif" alt="App Demo" width="360"/>
-<img src="media/github_explorer_search_query_and_location_filter.gif" alt="App Demo" width="360"/>
-<img src="media/github_explorer_profile_screen.gif" alt="App Demo" width="360"/>
+<img src="media/github_explorer_home_screen.gif" alt="App Demo" width="220"/> <img src="media/github_explorer_location_filter.gif" alt="App Demo" width="220"/>
+<img src="media/github_explorer_search_query_and_location_filter.gif" alt="App Demo" width="220"/><img src="media/github_explorer_profile_screen.gif" alt="App Demo" width="220"/>
 
 ---
 
