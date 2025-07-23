@@ -1,9 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.0.21"
 }
+
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+
+val githubToken: String = localProperties["GITHUB_TOKEN"] as String? ?: ""
 
 android {
     namespace = "com.jaseem.githubexplorer"
@@ -17,10 +25,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "GITHUB_TOKEN", githubToken)
     }
 
     buildTypes {
+        debug {
+            buildConfigField("Boolean", "enableHttpLogs", "true")
+        }
         release {
+            buildConfigField("Boolean", "enableHttpLogs", "false")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -58,6 +73,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.logging.interceptor)
 
 
     testImplementation(libs.junit)

@@ -23,7 +23,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -31,6 +36,9 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
@@ -51,8 +60,11 @@ import com.jaseem.githubexplorer.ui.common.EmptyState
 import com.jaseem.githubexplorer.ui.common.ErrorStateUi
 import com.jaseem.githubexplorer.ui.listscreen.viewmodel.ListScreenViewModel
 import com.jaseem.githubexplorer.ui.listscreen.viewmodel.ListScreenViewModelFactory
+import com.jaseem.githubexplorer.ui.listscreen.viewmodel.Location
 import com.jaseem.githubexplorer.ui.theme.AccentGithubGreen
 import com.jaseem.githubexplorer.ui.theme.ColumnSpacer
+import com.jaseem.githubexplorer.ui.theme.DarkBackground
+import com.jaseem.githubexplorer.ui.theme.DarkOnBackground
 import com.jaseem.githubexplorer.ui.theme.DarkOnSurface
 import com.jaseem.githubexplorer.ui.theme.DarkOutline
 import com.jaseem.githubexplorer.ui.theme.DarkSurface
@@ -65,6 +77,7 @@ import com.jaseem.githubexplorer.ui.theme.SIZE_64
 import com.jaseem.githubexplorer.ui.theme.SPACE_144
 import com.jaseem.githubexplorer.ui.theme.SPACE_16
 import com.jaseem.githubexplorer.ui.theme.SPACE_32
+import com.jaseem.githubexplorer.ui.theme.SPACE_4
 import com.jaseem.githubexplorer.ui.theme.SPACE_50
 import com.jaseem.githubexplorer.ui.theme.SPACE_70
 import com.jaseem.githubexplorer.ui.theme.SPACE_8
@@ -75,7 +88,7 @@ fun ListScreen(
     onClickItem: (userId: Int, username: String) -> Unit,
     viewModel: ListScreenViewModel = viewModel(factory = ListScreenViewModelFactory())
 ) {
-    val userList = viewModel.pagedUsers.collectAsLazyPagingItems()
+    val userList = viewModel.users.collectAsLazyPagingItems()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     Column(
@@ -122,19 +135,95 @@ fun ListScreen(
             enabled = userList.loadState.refresh != LoadState.Loading || userList.loadState.append != LoadState.Loading
         )
 
-        ColumnSpacer(SPACE_16)
+        ColumnSpacer(SPACE_4)
 
-        when (userList.loadState.refresh) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            RowSpacer(SPACE_16)
+
+            val selectedLocation by viewModel.selectedLocation.collectAsStateWithLifecycle()
+            var expanded by remember { mutableStateOf(false) }
+
+            Text(
+                text = stringResource(R.string.label_filter),
+                fontFamily = FiraCodeFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp
+            )
+
+            Box {
+                FilterChip(
+                    onClick = {
+                        expanded = true
+                    },
+                    label = {
+                        Text(
+                            text = if (selectedLocation == Location.None)
+                                stringResource(R.string.label_location)
+                            else selectedLocation.countryName,
+                            fontFamily = FiraCodeFontFamily,
+                            fontWeight = FontWeight.Normal
+                        )
+                    },
+                    selected = selectedLocation != Location.None,
+                    trailingIcon =
+                        {
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowDropDown,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        },
+                    shape = RoundedCornerShape(SIZE_4),
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = DarkOnBackground,
+                        selectedLabelColor = DarkBackground,
+                        selectedTrailingIconColor = DarkBackground
+                    )
+                )
+
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    for (location in viewModel.availableLocations) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = location.countryName,
+                                    fontFamily = FiraCodeFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(SPACE_8)
+                                )
+                            },
+                            onClick = {
+                                viewModel.onLocationFilterChange(location)
+                                expanded = !expanded
+                            },
+                            contentPadding = PaddingValues()
+                        )
+                    }
+                }
+            }
+
+
+            RowSpacer(SPACE_16)
+        }
+
+        ColumnSpacer(SPACE_4)
+
+        when (val state = userList.loadState.refresh) {
             is LoadState.Error -> {
-                ErrorStateUi(modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f))
+                ErrorStateUi(
+                    errorText = state.error.message ?: stringResource(R.string.error_generic),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
             }
 
             LoadState.Loading -> {
-                LoadingPage(modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f))
+                LoadingPage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
             }
 
             is LoadState.NotLoading -> {
@@ -142,12 +231,14 @@ fun ListScreen(
                     EmptyState(
                         text = stringResource(R.string.text_no_results_generic),
                         modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                            .fillMaxWidth()
+                            .weight(1f)
                     )
                 } else {
                     LazyColumn(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
                         contentPadding = PaddingValues(bottom = SPACE_144)
                     ) {
                         items(
@@ -206,7 +297,7 @@ fun ListScreen(
 
 @Composable
 private fun LoadingPage(modifier: Modifier = Modifier) {
-    LazyColumn (modifier) {
+    LazyColumn(modifier) {
         items(20) {
             ListItemLoading(
                 modifier = Modifier

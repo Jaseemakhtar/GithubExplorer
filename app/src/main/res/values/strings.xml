@@ -10,4 +10,6 @@
     <string name="text_no_results_generic">No results found!</string>
     <string name="text_repos_error">Something went wrong loading repos!</string>
     <string name="text_no_repos">User doesn\'t have any repos!</string>
+    <string name="label_location">Location</string>
+    <string name="label_filter">Filter: </string>
 </resources>

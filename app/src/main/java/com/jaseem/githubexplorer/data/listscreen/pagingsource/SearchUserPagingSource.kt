@@ -24,6 +24,7 @@ class SearchUserPagingSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UserSearchItemResponse> {
         return try {
             val page = params.key ?: 1
+
             val response = resourceWrapper {
                 api.searchUsers(
                     query = query,
