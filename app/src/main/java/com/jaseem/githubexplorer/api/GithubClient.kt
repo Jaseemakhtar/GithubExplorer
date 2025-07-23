@@ -10,20 +10,24 @@ import retrofit2.Retrofit
 
 object GitHubClient {
     private const val BASE_URL = "https://api.github.com/"
-    private const val PERSONAL_ACCESS_TOKEN = "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"
 
     private val json = Json {
         ignoreUnknownKeys = true
     }
 
     private val okHttpClient by lazy {
+        val personalAccessToken = BuildConfig.GITHUB_TOKEN
+
        val builder = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "token $PERSONAL_ACCESS_TOKEN")
                     .addHeader("Accept", "application/vnd.github+json")
-                    .build()
-                chain.proceed(request)
+
+                if (personalAccessToken.isNotEmpty()) {
+                   request.addHeader("Authorization", "token $personalAccessToken")
+                }
+
+                chain.proceed(request.build())
             }
 
         if (BuildConfig.enableHttpLogs) {

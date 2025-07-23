@@ -208,9 +208,10 @@ fun ListScreen(
 
         ColumnSpacer(SPACE_4)
 
-        when (userList.loadState.refresh) {
+        when (val state = userList.loadState.refresh) {
             is LoadState.Error -> {
                 ErrorStateUi(
+                    errorText = state.error.message ?: stringResource(R.string.error_generic),
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
